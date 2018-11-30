@@ -1,0 +1,81 @@
+<div class="fixed-top">
+  <nav class="main-nav navbar navbar-expand-lg navbar-light box-shadow">
+        <div class="navbar-left">
+            <a href="https://www.gsa.gov/" target="_blank">
+                <img src="./assets/images/gsa_logo.png" class="mt-2 mr-1 gsa-logo-top d-inline-block align-top" alt="GSA logo">
+            </a>
+            <a class="navbar-brand">
+                <h1 class="navbar-text mt-2">
+                    <div class="brand-main">FAS</div>
+                    <div class="brand-second">Sales Reporting</div>
+                </h1>
+            </a>
+        </div>
+        <div class="navbar-right top-navbar row no-gutters align-items-center">
+            <div class="navbar-toggle-wrapper">
+                <button id="navbar-toggle" 
+                        (click)="onToggleSidenav()" 
+                        [attr.aria-label]="(menuOpened) ? 'click to open side menu' : 'click to close side menu'">
+                    <span class="btn-content" tabindex="-1">
+                        <i class="fa" 
+                            [ngClass]="(menuOpened) ? 'fa-chevron-left' : 'fa-chevron-right'"
+                            >
+                        </i>
+                    </span>
+                </button>
+            </div>
+            <div class="navbar-right-inner">
+                <div class="row navbar-inner align-items-center justify-content-between">
+                    <div class="col-auto pl-3 server-time"><span class="sr-only">System Date/Time</span>{{servertime | amDateFormat:"MMM DD, YYYY HH:mm zz"}} EDT</div>
+                    <div class="col-auto text-right header-right-menus">
+                        <ul class="float-left" aria-label="Help Menu">
+                            <li class="mr-4">
+                                <a href="/portal/faqs.html?tab=system" id="right-navigation-faqs" target="_blank">FAQs</a>
+                            </li>
+                            <li class="mr-4">
+                                <a href="/usermanual/TDR.htm" id="right-navigation-help" target="_blank">Help</a>
+                            </li>
+                        </ul>
+                        <ul class="float-right" aria-label="User Menu">
+                            <li class="mr-4" *ngIf="displayName">
+                                <span class="sr-only">User Name</span>
+                                <i class="fa fa-user"></i> <span id="right-navigation-user-name">{{displayName}}</span>
+                            </li>
+                            <li *ngIf="displayName">
+                                <a href="javascript:void(0);" (click)="showModal()" id="right-navigation-logout">Logout</a>
+                            </li>
+                            <!-- <li class="dropdown" dropdown *ngIf="displayName">
+                                <a href="javascript:void(0)" id="dropdownMenuLink" class="dropdown-toggle" dropdownToggle><i class="fa fa-user"></i> {{displayName}}</a>
+                                <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="dropdownMenuLink">
+                                    <button class="dropdown-item" (click)="showModal()">Logout</button>
+                                </div>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<ng-template #logoutConfirmationModal>
+    <div class="modal-header clearfix">
+        <button type="button" class="close ml-auto" aria-label="Close" (click)="hideModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div>
+            Are you sure you want to logout?
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="clearfix">
+            <div class="pull-right">
+                <div>
+                    <button class="btn btn-danger" (click)="hideModal()">No</button>
+                    <button class="btn btn-primary"(click)="confirmLogout()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

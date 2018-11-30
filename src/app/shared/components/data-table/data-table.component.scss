@@ -1,0 +1,184 @@
+
+$tdr-orange: #da7a5c;
+$tdr-blue: #447e83;
+$tdr-green: #267328;;
+$tdr-purple: #3c1e98;
+$tdr-grey-bg: #576267;
+$tdr-orange-bg: #b85a3d ;
+$tdr-red: #e32c28;
+$tdr-grey: #757575;
+$tdr-light-grey: darken($tdr-grey, 20%);
+$tdr-link: #03419c;
+$tdr-grey-text: #3d3d3d;
+$menu-icon: #8e8e8e;
+
+
+.ui-widget-header.ui-table-caption{
+    background: #3d3d3d 0 0 repeat-x;
+    color: #fff;
+    padding: 0 10px !important;
+    border: thin solid #3d3d3d;
+    &.ui-paginator-bottom{
+        padding: 5px !important;
+    }
+}
+.ui-paginator-bottom{
+    background: none;
+    position: relative;
+    border: none;
+    padding: 15px 0;
+    border-top: thin solid #818080 !important;
+    .ui-state-default{
+        border: none;
+    }
+    .ui-paginator-element{
+        color: #cc481e;
+    }
+    .ui-paginator-page{
+        color: #3d3d3d;
+    }
+    .ui-paginator-page.ui-state-active{
+        background-color: #4e4e4e !important;
+        border-radius: 0;
+    }
+    .ui-state-default.ui-dropdown{
+        border: thin solid $tdr-link;
+        border-radius: 0;
+        label{
+            color: $tdr-link;
+            font-weight: 600
+        }
+    }
+    .ui-dropdown .ui-dropdown-trigger .fa{
+        margin-top: .5em;
+        color: $tdr-link;
+    }
+}
+.ui-table {
+    .hidden-col{
+        display: none;
+    }
+    .ui-table-thead>tr>th {
+        background-color: #ebebeb;
+        color: #3d3d3d;
+        font-size: 0.875rem;
+        font-weight: bold;
+        border: none;
+        text-align: left;
+        padding: 10px;
+    }
+    tbody tr.ui-widget-content.ui-table-odd {
+        background-color: #f5f5f5;
+    }
+    .ui-sortable-column {
+        font-size: 0.9rem;
+        &.ui-state-highlight{
+            background: #d3d5d8;
+            color: #1b1d1f;
+        }
+    }
+		
+    .ui-sortable-column.ui-state-highlight .ui-sortable-column-icon {
+        color: #1b1d1f;
+    }
+
+    .ui-table-tbody tr.ui-state-highlight {
+        background-color: #fdecbd !important;
+        color: #222222 !important;
+    }
+    tbody.ui-table-tbody tr:hover{
+        background-color: #e7f1f8;
+    }
+    tbody.ui-table-tbody tr td{
+        border: none;
+        padding: 8px 10px;
+        font-weight: 600;
+        text-align: left;
+        font-size: 0.875rem;
+        word-wrap: break-word;
+    }
+}
+@-moz-document url-prefix() {
+    .ui-table tbody.ui-table-tbody tr td{
+        font-weight: 500;
+    }
+    .ui-paginator-bottom .ui-state-default.ui-dropdown label{
+        font-weight: 500
+    }
+}
+.ui-paginator .ui-paginator-page.ui-state-active{
+    background-color: $tdr-orange;
+    border: none;
+}
+.mat-form-field-empty.mat-form-field-placeholder{
+    color: #fff;
+}
+.mat-form-field-underline,
+.mat-form-field-ripple{
+    background-color: #fff;
+}
+.ui-radiobutton-icon {
+    display: block;
+    font-size: .5em;
+    line-height: inherit;
+    margin-top: -1px;
+}
+.ui-chkbox-box.ui-state-active {
+    border: 1px solid $tdr-grey;
+    background: $tdr-grey;
+    color: #FFFFFF;
+}
+
+.ui-radiobutton-box.ui-state-active {
+    border: 1px solid #187fc1;
+    background: #fff;
+    .ui-radiobutton-icon:before{
+        color: #187fc1;
+    }
+}
+
+.dt-no-records{
+    padding: 30px 0 !important;
+    color: #b85a3d !important;
+    font-weight: 600;
+    font-style: italic;
+    background-color: #fff;
+    font-size: 1.2rem;
+    background: none !important;
+    border: none !important;
+}
+
+.ui-table-summary{
+    padding: 0;
+}
+
+.ui-paginator .ui-paginator-left-content{
+    @media (max-width: 1120px) {
+        float: none;
+    }
+}
+
+.data-table-records-count{
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.9rem;
+    position: absolute;
+    top: 20px;
+    left: 15px;
+    @media (max-width: 1120px) {
+        position: relative;
+        margin-bottom: 10px;
+        top: 0;
+        display: block;
+    }
+}
+
+// CSS hack for the default sort column icon until it gets fixed by prime NG
+.ui-state-highlight .fa-sort{
+    &.fa-sort-asc:before{
+        content: "\F0DE";
+    }
+    &:before{
+        content: "\F0DD";
+    }
+}

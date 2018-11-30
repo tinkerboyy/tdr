@@ -1,0 +1,27 @@
+<mat-accordion multi="true">
+    <div *ngFor="let menuItem of items">
+        <!-- for nested items -->
+        <mat-expansion-panel *ngIf="menuItem.items" [id]="menuItem.id" [disabled]="!menuItem.items" [class.menu-no-children]="!menuItem.items">
+            <mat-expansion-panel-header>
+                <mat-panel-title *ngIf="menuItem.items">
+                    <i [class]="menuItem.icon" aria-hidden="true"></i>{{menuItem.label}}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <ul class="main-menu-sub-menu" *ngIf="menuItem.items">
+                <li *ngFor="let subItem of menuItem.items" class="main-menu-sub-item">
+                    <a *ngIf="subItem.link" [id]="subItem.id" [href]="subItem.link">{{subItem.label}}</a>
+                    <a *ngIf="subItem.routerLink" [id]="subItem.id" [routerLink]="subItem.routerLink">{{subItem.label}}</a>
+                </li>
+            </ul>
+        </mat-expansion-panel>
+        <!-- for single item -->
+        <div *ngIf="!menuItem.items" class="single-item">
+            <a *ngIf="menuItem.link" role="button" id="{{menuItem.id}}-link" [href]="menuItem.link" class="menu-item-no-children">
+                <i [class]="menuItem.icon" aria-hidden="true"></i>{{menuItem.label}}
+            </a>
+            <a *ngIf="menuItem.routerLink" role="button" id="{{menuItem.id}}-link" [routerLink]="menuItem.routerLink" class="menu-item-no-children">
+                <i [class]="menuItem.icon" aria-hidden="true"></i>{{menuItem.label}}
+            </a>
+        </div>
+    </div>
+</mat-accordion>

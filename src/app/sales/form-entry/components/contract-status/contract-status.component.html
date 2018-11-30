@@ -1,0 +1,119 @@
+<mat-card>
+  <form [formGroup]="form" novalidate>
+    <div class="header_underlined row" *ngIf="contract?.vendor_name">
+        <div class="text-capitalize">{{contract?.vendor_name}}</div>
+        <div class="col-auto">
+          <span class="pr-1">DUNS </span>
+          <strong>{{reportContract?.duns}}</strong>
+        </div>
+        <div class="col-auto">
+          <span class="pr-1">
+            Contract Vehicle
+          </span>
+          <strong>{{reportContract?.schedule}}</strong>
+        </div>
+      </div>
+
+      <div 
+        class="contractDetails no-gutters row"
+        *ngIf="vendorContracts?.length">
+          <div class="col-12 col-md-3">
+            <label for="contractNumber">Contract Number
+              <span aria-hidden="true">*</span>
+              <span class="sr-only"> required</span>
+            </label>
+            <p-dropdown 
+              #dd 
+              [options]="vendorContracts" 
+              inputId="contractNumber" 
+              formControlName="contract_id"
+              [style]="{'width':'85%'}" 
+              name="contractNumber"
+              [filter]="true" 
+              resetFilterOnHide="true" 
+              filterPlaceholder="Filter by contract no."
+              placeholder="Select a Contract"
+              (onChange)="changeContractNumber($event)">
+            </p-dropdown>
+          </div>
+          <div class="d-block d-md-none mt-5 mb-3">
+            <br />
+      </div>
+      <div class="col-12 col-md-9" *ngIf="reportContract">
+          <div class="row no-gutters h-100">
+            <div class="col-4 col-md reporting-zero-sales" *ngIf="contractLoadedAndNonCloseout()">
+              <label for="zeroSales" class="w-100" id="zero-sales-label">Reporting Zero Sales</label>
+              <p name="reportStatus" id="zeroSales" role="radiogroup">
+                <input type='radio' class="inline-radio" id="zero-sales-yes" name="zerosale" aria-labelledby="zero-sales-label" formControlName="zerosale"
+                  value="Yes" (change)="changeReportZeroSales($event, zeroSalesModal)">Yes &nbsp;
+                <input type='radio' class="inline-radio" id="zero-sales-no" name="zerosale" aria-labelledby="zero-sales-label" formControlName="zerosale"
+                  value="No" (change)="changeReportZeroSales($event, zeroSalesModal)">No
+              </p>
+            </div>
+            <div class="col-3 col-md info-wrap" *ngIf="showContractDetails()" aria-label="Reporting Period">
+              <label for="reportingPeriod" class="w-100">Reporting Period
+                <span *ngIf="contract.closeoutEligible"></span>
+              </label>
+              <p-dropdown [options]="vendorContracts" inputId="reportingPeriod" [style]="{'width':'100%'}" name="Reporting Period"
+                filter="true" (onChange)="changeReportingPeriod($event)" placeholder="Select Reporting Period" *ngIf="contract.closeoutEligible"></p-dropdown>
+              <p *ngIf="reportContract">
+                <strong id="reportingPeriodText">
+                  {{reportContract.displayreportingPeriod ? reportContract.displayreportingPeriod : reportContract.reportingPeriod}}
+                </strong>
+              </p>
+            </div>
+    
+            <div class="col-3 col-md info-wrap" *ngIf="showContractDetails()" aria-label="Reporting Frequency">
+              <label for="reportingFrequencyText" class="w-100">Reporting Frequency</label>
+              <p *ngIf="reportContract">
+                <strong id="reportingFrequencyText" class="text-capitalize">
+                  {{reportContract.active_reporting_type | lowercase}}
+                </strong>
+              </p>
+            </div>
+            <div class="col-3 col-md info-wrap" *ngIf="showContractDetails()" aria-label="Reporting Date">
+              <label for="reportingDateText" class="w-100">Reporting Date</label>
+              <p *ngIf="reportContract">
+                <strong id="reportingDateText" class="text-capitalize">
+                  {{today | date:'shortDate'}}
+                </strong>
+              </p>
+            </div>
+            <div class="d-block d-md-none mt-5 mb-5">
+              <br />
+            </div>
+            <div class="col-3 col-md info-wrap" *ngIf="showContractDetails()" aria-label="Reporting Status">
+              <label for="reportStatusText" class="w-100">Reporting Status</label>
+              <p *ngIf="reportContract" name="reportStatus">
+                <strong id="reportStatusText" class="text-capitalize">
+                  {{(salesTxData?.status ? salesTxData.status : 'NOT REPORTED') | lowercase}}
+                </strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </form>
+</mat-card>
+
+  <!-- <tdr-table></tdr-table> -->
+    
+
+<ng-template #zeroSalesModal>
+<div class="modal-header clearfix">
+  <button type="button" class="close ml-auto" aria-label="Close" (click)="closeZeroSalesModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  Are you sure you want to delete all orders and report zero sales?
+</div>
+<div class="modal-footer">
+  <div class="clearfix">
+    <div class="pull-right">
+      <button mat-raised-button color="primary" (click)="closeZeroSalesModal()">No</button>
+      <button mat-raised-button color="accent" (click)="confirmZeroSales()">Yes</button>
+    </div>
+  </div>
+</div>
+</ng-template>

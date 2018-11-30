@@ -1,0 +1,15 @@
+<!-- TODO Breadcrumbs -->
+<!-- <ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a routerLink="/v2/home" class="breadcrumb">Home</a>
+  </li>
+  <li *ngFor="let breadcrumb of breadcrumbs" class="breadcrumb-item">
+    <a [routerLink]="[breadcrumb.url, breadcrumb.params]">{{ breadcrumb.label }}</a>
+  </li>
+</ol> -->
+
+<h2 *ngIf="pageInfo.title" class="page-title mt-3">{{pageInfo.title}}</h2>
+
+<div *ngIf="pageInfo.description" class="smaller-text mb-3" role="alert">
+  {{pageInfo.description}}
+</div>

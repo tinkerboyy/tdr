@@ -1,0 +1,41 @@
+footer {
+    background-color: #313131;
+    color: #f3f4f6;
+    a {
+        color: #93c9f8;
+    }
+    a:hover {
+        color: #2b9bfc;
+        text-decoration: none;
+    }
+    ul {
+        margin-bottom: 0;
+        li {
+            margin-right: 0;
+        }
+        li a {
+            padding: 0 10px;
+            border-right: thin solid #93c9f8;
+        }
+        li:last-child a {
+            border-right: none;
+        }
+    }
+    .contact-wrapper {
+        border-top: thin solid #555;
+        border-bottom: thin solid #555;
+        padding: 10px 0;
+    }
+    .contact-header {
+        font-size: 1.3rem;
+        text-align: right;
+        @media (max-width: 576px) {
+            text-align: center;
+        }
+    }
+    .contact-text {
+        @media (max-width: 576px) {
+            text-align: center;
+        }
+    }
+}

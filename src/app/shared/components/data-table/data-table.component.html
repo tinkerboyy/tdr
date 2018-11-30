@@ -1,0 +1,79 @@
+<p-table
+    [value]="records"
+    [columns]="tableSetting.columns"
+    [(selection)]="selectedRow"
+    class="text-center"
+    [rows]="10"
+    [sortField]="tableSetting.sortColumn"
+    [sortOrder]="tableSetting.sortOrder"
+    [paginator]="true"
+    [scrollable]="false"
+    [rowsPerPageOptions]="[10,25,50,100]"
+    (sortFunction)="customSort($event)"
+    [customSort]="true"
+    #dt>
+    <ng-template pTemplate="caption">
+        <div class="text-left">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <mat-form-field>
+                <input type="text" id="data-table-filter" matInput size="50" aria-label="Enter text to filter data table" placeholder="Filter" (input)="dt.filterGlobal($event.target.value, 'contains')">
+            </mat-form-field>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr role="row">
+            <th *ngIf="tableSetting.selectable" scope="col" [attr.aria-label]="col.header" id="data-table-header-select" style="width: 4%; font-size: 1rem"></th>
+            <th *ngFor="let col of columns; let colIndex = index" 
+                id="data-table-header-{{colIndex+1}}" 
+                scope="col" 
+                [attr.aria-label]="col.header" 
+                [pSortableColumn]="col.sort_field ? col.sort_field : col.field" 
+                [style.width]="col.format !== 'hidden' ? col.width : 0" 
+                [attr.aria-hidden]="col.format === 'hidden' ? true : false"
+                [style.display]="col.format !== 'hidden' ? 'table-cell' : 'none'">
+                <ng-container *ngIf="col.format !== 'hidden'">
+                    {{col.header}}
+                    <p-sortIcon 
+                        [field]="col.sort_field ? col.sort_field : col.field"
+                        ariaLabelDesc="Activate to sort column descending" 
+                        ariaLabelAsc="Activate to sort column ascending">
+                    </p-sortIcon>
+                </ng-container>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns">
+        <tr [pSelectableRow]="rowData" role="row">
+            <td  *ngIf="tableSetting.selectable" style="width: 4%; font-size: 1rem" id="data-table-row-{{rowIndex+1}}-col-0">
+                <p-tableRadioButton *ngIf="tableSetting.selectable === 'radio'" id="data-table-radio" (click)="onRowSelected()" [value]="rowData"></p-tableRadioButton>
+                <p-tableCheckbox *ngIf="tableSetting.selectable === 'checkbox'" id="data-table-checkbox" (click)="onRowSelected()" [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td *ngFor="let col of columns; let colIndex = index" 
+                id="data-table-row-{{rowIndex+1}}-col-{{colIndex+1}}" 
+                [style.width]="col.format !== 'hidden' ? col.width : 0" 
+                [attr.aria-hidden]="col.format === 'hidden' ? true : false"
+                [style.display]="col.format !== 'hidden' ? 'table-cell' : 'none'">
+                <ng-container *ngIf="col.format !== 'hidden'">
+                    <span *ngIf="rowData[col.field] === null || rowData[col.field] === ''">--</span>
+                    <span *ngIf="rowData[col.field] !== null && rowData[col.field] !== '' && !col.format">{{rowData[col.field]}}</span>
+                    <span *ngIf="rowData[col.field] !== null && rowData[col.field] !== '' && col.format && col.format === 'date_full'">{{ rowData[col.field] | date:'MM/dd/yyyy&nbsp;&nbsp;HH:mm:ss' }}</span>
+                    <span *ngIf="rowData[col.field] !== null && rowData[col.field] !== '' && col.format && col.format === 'date_month'">{{ rowData[col.field] | monthName}}</span>
+                    <a *ngIf="rowData[col.field] !== null && rowData[col.field] !== '' && col.format && col.format === 'link'" [href]="rowData[col.link]" class="link-underline blue-text">{{rowData[col.field]}}</a>
+                    <a *ngIf="rowData[col.field] !== null && rowData[col.field] !== '' && col.format && col.format === 'balance'" [href]="rowData[col.link]" [appHighlightNumber]="rowData[col.field]" class="link-underline blue-text">{{rowData[col.field] | currency:'USD':'symbol' | parens}}</a>
+                    <!-- <button *ngIf="col.format && col.format === 'button'" mat-raised-button color="accent" [routerLink]="rowData[col.link]"><i class="fa" [ngClass]="col.btnIcon"></i> {{col.btnText ? col.btnText : 'Select' }}</button> -->
+                </ng-container>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <tr aria-live="assertive">
+            <td colspan="100%" class="dt-no-records" *ngIf="dt.totalRecords === 0" role="alert">
+                <span>No Records Found</span>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+        <span *ngIf="dt.totalRecords > 0" class="data-table-records-count" role="alert" aria-live="assertive">Showing {{dt.first + 1}} to {{((dt.first + dt.rows) < dt.totalRecords ? dt.first + dt.rows : dt.totalRecords )}} out of {{dt.totalRecords}} entries</span>
+    </ng-template>
+</p-table>
+

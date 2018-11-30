@@ -1,0 +1,10 @@
+{
+    "/TDR/vendoruser": {
+        "target": "https://gsardev1.karsun-csb.com:39527",
+        "secure": false
+    },
+    "/TDR/service": {
+        "target": "https://gsardev1.karsun-csb.com:39527",
+        "secure": false
+    }
+}

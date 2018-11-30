@@ -1,0 +1,130 @@
+<div class="container-fluid">
+  <div class="fixed-action-btn">
+      <button class="btn btn-default" (click)="onPageUp()">
+        <svg class="center" style="width:32px;height:32px" viewBox="0 0 24 24">
+          <path fill="#ffffff" d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+        </svg>
+      </button>
+    </div>
+  <div class="row">
+    <div class="col">
+        <div class="table-of-contents">
+            <h1 class="title">
+              <a href="javascript:void(0)">
+                  TDR Documentation
+              </a>
+              
+            </h1>
+            <div class="title-based-on">
+              demo based on <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">markdown cheatsheet</a>
+            </div>
+            <ul class="documentation__list">
+              <li><a pageScroll href="#architecture">Architecture</a></li>
+              <li><a pageScroll href="#css">Css BEM standard</a></li>
+              <li><a pageScroll href="#code-and-synthax">Code and Syntax</a></li>
+              <li><a pageScroll href="#accessibility">Accessibility</a></li>
+              <li><a pageScroll href="#variable-binding">Variable Binding</a></li>
+              <li><a pageScroll href="#pipe">Pipe Usage</a></li>
+            </ul>
+          </div>
+    </div>
+    <div class="col">
+      <section id="architecture">
+          <h2 class="subtitle">
+              <img width="40" valign="bottom" src="https://angular.io/assets/images/logos/angular/angular.svg">
+              Angular Architecture Guide
+          </h2>
+          <markdown>{{architecture}}</markdown>
+        </section>
+
+        <section id="css">
+            <h2 class="subtitle">Css Standards</h2>
+    
+            <markdown>
+              ### Have to update with css standards
+            </markdown>
+          </section>
+    
+          <section id="accessibility">
+              <h2 class="subtitle">Accessibility & 508 Compliance</h2>
+      
+              <markdown>
+                ### Have to update Accessibility & 508 Compliance practices
+              </markdown>
+          </section>
+
+          <section>
+            <markdown>
+              ## Table of Contents
+
+                1. [Types](#types)
+                1. [References](#references)
+                1. [Objects](#objects)
+                1. [Arrays](#arrays)
+                1. [Destructuring](#destructuring)
+                1. [Strings](#strings)
+                1. [Functions](#functions)
+                1. [Arrow Functions](#arrow-functions)
+                1. [Constructors](#constructors)
+                1. [Modules](#modules)
+                1. [Iterators and Generators](#iterators-and-generators)
+                1. [Properties](#properties)
+                1. [Variables](#variables)
+                1. [Hoisting](#hoisting)
+                1. [Comparison Operators & Equality](#comparison-operators--equality)
+                1. [Blocks](#blocks)
+                1. [Comments](#comments)
+                1. [Whitespace](#whitespace)
+                1. [Commas](#commas)
+                1. [Semicolons](#semicolons)
+                1. [Type Casting & Coercion](#type-casting--coercion)
+                1. [Naming Conventions](#naming-conventions)
+                1. [Accessors](#accessors)
+                1. [Events](#events)
+                1. [jQuery](#jquery)
+                1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
+                1. [ECMAScript 6 Styles](#ecmascript-6-styles)
+                1. [Testing](#testing)
+                1. [Performance](#performance)
+                1. [Resources](#resources)
+                1. [In the Wild](#in-the-wild)
+                1. [Translation](#translation)
+                1. [The JavaScript Style Guide Guide](#the-javascript-style-guide-guide)
+                1. [Contributors](#contributors)
+                1. [IRESS Amendments](#iress-amendments)
+                1. [License](#license)
+
+              ## Types
+               
+                + `string`
+                + `number`
+                + `boolean`
+                + `null`
+                + `undefined`
+
+               ```javascript
+                 const foo = 1;
+                 let bar = foo;
+
+                 bar = 9;
+
+                 console.log(foo, bar); // => 1, 9
+               ```
+
+               + `object`
+               + `array`
+               + `function`
+           
+               ```javascript
+               const foo = [1, 2];
+               const bar = foo;
+           
+               bar[0] = 9;
+           
+               console.log(foo[0], bar[0]); // => 9, 9
+               ```
+            </markdown>
+          </section>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+$tdr-grey-text: #3d3d3d;
+$menu-icon: #8e8e8e;
+
+.mat-expansion-panel.mat-expanded{
+    border-top: thin solid #ebebeb;
+    border-bottom: thin solid #ebebeb;
+}
+.mat-expansion-panel-header{
+    padding: 0 20px 0 5px;
+    margin-bottom: 5px;
+    &.mat-expanded .mat-expansion-panel-header-title,
+    &.mat-expanded .mat-expansion-panel-header-title i,
+    &.mat-expanded:hover .mat-expansion-panel-header-title{
+        color: #cc481e;
+    }
+    .mat-expansion-panel-header-description, 
+    .mat-expansion-panel-header-title{
+        display: block;
+        padding: 15px 10px;
+        color: $tdr-grey-text;
+        font-size: 0.9rem;
+        margin-right: 0;
+        font-weight: 600;
+        &:hover {
+            color: $tdr-grey-text;
+        }
+        .fa{
+            font-size: 1.2rem;
+            padding-right: 8px;
+            width: 25px;
+            color: $menu-icon;
+        }
+    }
+    &:hover{
+        background-color: #f3f3f3 !important;
+    }
+}
+@-moz-document url-prefix() {
+    .mat-expansion-panel-header .mat-expansion-panel-header-description, 
+    .mat-expansion-panel-header .mat-expansion-panel-header-title{
+        font-weight: 500 !important;
+    }
+}
+
+.mat-expansion-panel-spacing {
+    margin: 0;
+}
+
+.main-menu-sub-menu{
+    padding-left: 25px;
+    margin: 0;
+    list-style: none;
+}
+
+.main-menu-sub-item{
+    padding: 3px 0 3px 4px;
+    margin-bottom: 3px;
+    a:hover{
+        color: #cc481e !important;
+    }
+}
+
+.main-menu-sub-item a,
+.menu-item-no-children{
+    color: $tdr-grey-text;
+    font-size: 0.9rem;
+    &:hover {
+        text-decoration: none;
+        color: $tdr-grey-text;
+    }
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]){
+    box-shadow: none;
+}
+
+.single-item{
+    height: 48px !important;
+    visibility: visible !important;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 5px;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .mat-expansion-panel-body{
+        padding: 0;
+        width: 100%;
+    }
+    a{
+        display: block;
+        padding: 15px;
+        width: 100%;
+        color: #3d3d3d;
+        font-size: 0.9rem;
+        margin-right: 0;
+        font-weight: 600;
+        &:hover,
+        &:focus{
+            background-color: #f3f3f3 !important;
+            outline: none;
+        }
+    }
+    i{
+        font-size: 1.2rem;
+        padding-right: 8px;
+        width: 25px;
+        color: #8e8e8e;
+    }
+}
+@-moz-document url-prefix() {
+    .single-item a{
+        font-weight: 500;
+    }
+}

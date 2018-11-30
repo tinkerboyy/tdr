@@ -1,0 +1,661 @@
+<mat-card *ngIf="showContractDetails()">
+  <div class="row mb-4">
+      <div
+        class="col-md-6"
+        *ngIf="reportContract  && reportContract.active_reporting_type === 'MONTHLY'"
+        >
+        <form [formGroup]="addOrderForm" (ngSubmit)="addOrder(addOrderForm)">
+          <div class="row no-gutters">
+            <div class="col-md-10 mt-2">
+              <mat-form-field
+                *ngIf="contract.contract_type === 'MAS'"
+                class="example-full-width  w-100"
+
+                >
+                <input
+                  matInput
+                  type="text"
+                  id="enter-piid"
+                  name="orderId"
+                  [disabled]="salesTxData.zerosale === 'Yes'"
+                  placeholder="Add Task Order / Delivery Order / Procurement Instrument Identifier"
+                  formControlName="orderId"
+                  maxlength="35"
+                  aria-label="Add Task Order / Delivery Order / Procurement Instrument Identifier"
+                  >
+              </mat-form-field>
+            
+              <select class="from-control w-100"
+                id="select-piid"
+                name="orderId"
+                [disabled]="salesTxData.zerosale === 'Yes'"
+                formControlName="orderId"
+                aria-label="Select Task Order / Delivery Order / Procurement Instrument Identifier"
+                *ngIf="contract.contract_type === 'NONMAS'">
+                  <option value="">Select Task Order</option>
+                  <option [value]="taskOrder.piid"  *ngFor="let taskOrder of reportContract.taskOrders">{{taskOrder.piid}}</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+                <button
+                mat-raised-button
+                class="ml-2 mt-2"
+                color="ghost"
+                id="add-piid"
+                type="submit"
+                ari
+                [disabled]="salesTxData?.zerosale === 'Yes'"
+                >Add Order
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+        <div [ngClass]="{'col-lg-6': isMonthlyContractAndSelectedOrder(), 'col-lg-auto': !isMonthlyContractAndSelectedOrder()}" class="col-6 text-center">
+          <div class="row">
+            <div class="col-12">
+              <p class="sales-header">Total Sales</p>
+            </div>
+            <div class="col-12">
+              <p
+                *ngIf="reportContract && reportContract.active_reporting_type === 'MONTHLY'; else quaterly;"
+                class="sales-info"
+                id="total-sales"
+                aria-label="Total Sales"
+                >{{calculateMonthlyTotalSales(orders) | currency: 'USD':true}}
+              </p>
+
+              <ng-template #quaterly>
+                  <p
+                    class="sales-info"
+                    id="total-sales"
+                    aria-label="Total Sales"
+                    >
+                    {{calculateQuaterlyTotalSales(records)  | currency: 'USD':true}}
+                </p>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-4 text-center">
+          <div class="row">
+            <div class="col-12">
+              <p class="sales-header">Total Fee Due</p>
+            </div>
+            <div class="col-12">
+              <p class="sales-info text-red" id="total-fee-due" aria-label="Total Fee Due">
+                  {{salesTxData.fees_amount}}
+              </p>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+  </div>
+
+  <!-- Quarterly Entry table -->
+  <div class="row mt-2" *ngIf="reportContract && reportContract.active_reporting_type === 'QUARTERLY'">
+      <div class="col-8" id="quarterly-form">
+
+            <p-table [value]="records" class="sales-table">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th [style.width]="'100px'">Line No</th>
+                        <th [style.width]="'230px'">Special Item Number (SIN)*</th>
+                        <th>Total Price* (US$)</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-sData let-i="rowIndex">
+                    <tr >
+                        <td [style.width]="'100px'">{{i + 1}}</td>
+                        <td>{{sData.sin_number}}</td>
+                        <td pEditableColumn  [style.width]="'230px'">
+                          <p-cellEditor>
+                            <ng-template pTemplate="input">
+                              <input
+                                type="text"
+                                id="totalPrice-{{i + 1}}"
+                                name="totalPrice-{{i + 1}}"
+                                [(ngModel)]="sData.totalPrice"
+                                aria-label="Total Price"
+                              >
+                            </ng-template>
+
+                            <ng-template pTemplate="output">
+                              <span class="table__placeholder">
+                                  {{sData.totalPrice ? (sData.totalPrice | currency: 'USD':true) : ''}}
+                              </span>
+                            </ng-template>
+                        </p-cellEditor>
+                      </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+    </div>
+  </div>
+ <div class="row justify-content-between" *ngIf="isMonthlyContractAndSelectedOrder()">
+      <div class="col-2">
+        <button mat-button color="link" (click)="toggleTablesDisplay()" class="all-sales-tables-toggle" style="font-size: 1rem">
+          <i class="fa" style="border: thin solid; padding: 3px" [ngClass]="toggleAll ? 'fa-plus': 'fa-minus'" aria-hidden="true"></i>
+          <strong *ngIf="!toggleAll" class="test"> COLLAPSE ALL</strong>
+          <strong *ngIf="toggleAll" class="test"> EXPAND ALL</strong>
+        </button>
+      </div>
+      <div class="col-4 text-right actions-top">
+        <button class="save-sales-data" mat-raised-button color="accent" (click)="showSaveModal('save')">Save</button>
+        <button class="submit-sales-data" mat-raised-button color="accent" (click)="showSaveModal('submit')">Submit</button>
+      </div>
+    </div>
+
+   <div class="row mt-2">
+      <div class="col-12 mb-4" *ngFor="let order of orders; let i = index;">
+        <div class="table__wrapper mt-2">
+          <div>
+            <div class="table-info-header row align-items-center no-gutters">
+              <div class="col-auto pr-3">
+                <button class="sales-table-toggle" (click)="toggle[i] = !toggle[i]">
+                  <i class="fa"
+                    [ngClass]="toggle[i] ? 'fa-plus': 'fa-minus'"
+                    aria-hidden="true" ></i>
+                  <span class="sr-only">Toggle Table View</span>
+                </button>
+              </div>
+              <div class="col-auto pr-4 order-number-text-wrapper">
+                <span class="pr-1">Order No</span>
+                <strong>{{order.orderId}} </strong>
+              </div>
+              <div class="col-auto pr-4 total-sales-per-order-text">
+                <span class="pr-1">Total Sales per order</span>
+                <strong>{{calculateMonthly(order.records) | currency: 'USD':true}}</strong>
+              </div>
+              <div class="col-auto">
+                <button
+                  mat-raised-button
+                  color="ghost"
+                  (click)="deleteOrderDialog(order, deleteOrderModal)"
+                  >Delete Order</button>
+              </div>
+            </div>
+            <div class="table__quarterly table-form__content" [collapsePanel]="toggle[i]">
+                <p-table
+                  [value]="order.records"
+                  [attr.id]="'sales-table-'+order.orderId"
+                  class="text-center"
+                  [scrollable]="true"
+                  #dt>
+                 <!--<ng-template pTemplate="colgroup" let-columns>
+                    <colgroup>
+                      <col *ngFor="let number of numbers" [style.width]="'200px'">
+                    </colgroup>
+                  </ng-template>-->
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th [style.width]="'100px'">Line No</th>
+                      <th [style.width]="'150px'">Description of Deliverable *</th>
+                      <th [style.width]="'150px'">Manufacturer Name</th>
+                      <th [style.width]="'150px'">Manufacturer Part Number</th>
+                      <th [style.width]="'150px'">UPC Code</th>
+                      <th [style.width]="'150px'"  tooltip="Special Item Number (SIN) / Contract Line Item Number (CLIN)"
+                          
+                         #myTooltip="tooltip">SIN / CLIN
+                        <i class="fa fa-info-circle" 
+                          (mouseover)="myTooltip.show()" 
+                          (mouseout)="myTooltip.hide()"
+                        ></i>
+                      </th>
+                      <th [style.width]="'200px'">Unit Measure *</th>
+                      <th [style.width]="'150px'">Quantity of Items Sold *</th>
+                      <th [style.width]="'150px'">Unit Price * (US$)</th>
+                      <th [style.width]="'150px'">Total Price * (US$)</th>
+                      <th [style.width]="'200px'">Non-Federal Entity</th>
+                      <th [style.width]="'100px'">Delete</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-record let-i="rowIndex" let-columns>
+
+                    <tr>
+                      <td [style.width]="'100px'">
+                        {{i + 1}}
+                      </td>
+                      <td pEditableColumn [style.width]="'150px'" class="test-{{i}}" [attr.tabindex]="0" (focus)="onFocusField($event)">
+                        
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input
+                                      type="text"
+                                      id="descDeliverable-{{i + 1}}"
+                                      name="descDeliverable-{{i + 1}}"
+                                      [(ngModel)]="record.descDeliverable"
+                                      aria-label="Description of Deliverable"  
+                                      customErrors
+                                     >
+                              
+                                </ng-template>
+    
+                                <ng-template pTemplate="output">
+                                  <span class="table__placeholder" [customErrors]="{value: record.descDeliverable, field: 'deliverable'}">
+                                      {{record.descDeliverable}}
+                                  </span>
+                                </ng-template>
+                            </p-cellEditor>
+                      
+                    
+                    </td>
+
+                    <td pEditableColumn [style.width]="'150px'">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input
+                                  type="text"
+                                  id="name-{{i + 1}}"
+                                  name="name-{{i + 1}}"
+                                  [(ngModel)]="record.name"
+                                  aria-label="Manufacturer Name">
+                            </ng-template>
+
+                            <ng-template pTemplate="output">
+                                <span class="table__placeholder">
+                                    {{record.name}}
+                                </span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td pEditableColumn [style.width]="'150px'">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input
+                                  type="text"
+                                  name="partNumber-{{i + 1}}"
+                                  placeholder=""
+                                  id="partNumber-{{i + 1}}"
+                                  [(ngModel)]="record.partNumber"
+                                  aria-label="Manufacturer Part Number">
+                            </ng-template>
+
+                            <ng-template pTemplate="output">
+                                <span class="table__placeholder">
+                                    {{record.partNumber}}
+                                </span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                    <td pEditableColumn [style.width]="'150px'">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input
+                                  type="text"
+                                  id="upc-{{i + 1}}"
+                                  name="upc-{{i + 1}}"
+                                  [(ngModel)]="record.upc"
+                                  aria-label="UPC Code">
+                            </ng-template>
+
+                            <ng-template pTemplate="output">
+                                <span class="table__placeholder">
+                                    {{record.upc}}
+                                </span>
+                              
+
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+
+                      <td pEditableColumn [style.width]="'150px'">
+
+                          <p-cellEditor>
+                              <ng-template pTemplate="input">
+                                  <!--<select class="form-control" id="sin_number-{{i + 1}}" [(ngModel)]="record.sin_number" name="sin_number-{{i + 1}}" aria-label="Sin Cli">
+                                      <option value="">Choose SIN/CLIN</option>
+                                      <option *ngFor="let entity of sinCli" [value]="entity.sin_number">{{entity.sin_number}}</option>
+                                  </select>-->
+                                <!--<p-dropdown
+                                  #dd
+                                  name="sin_number-{{i + 1}}"
+                                  id="sin_number-{{i + 1}}"
+                                  [options]="sinCli"
+                                  placeholder="Select a Contract"
+                                  [(ngModel)]="record.sin_number"
+                                  filter="true"
+                                  resetFilterOnHide="true"
+                                  (onFocus)="clearFilter(dd)"
+                                  filterPlaceholder="Filter by contract no."
+                                ></p-dropdown>-->
+                                <p-dropdown 
+                                  name="sin_number-{{i + 1}}"
+                                  id="sin_number-{{i + 1}}"
+                                  placeholder="Choose SIN/CLIN"
+                                  [(ngModel)]="record.sin_number"
+                                  [options]="sinCliList" 
+                                  [autoWidth]="false" 
+                                  [style]="{'width':'100%'}"
+                                  
+                                  appendTo="body">
+                               </p-dropdown>
+                              </ng-template>
+
+                              <ng-template pTemplate="output">
+                                  <span class="table__placeholder">
+                                      {{record.sin_number === '' ? 'Choose SIN/CLIN' : record.sin_number}}
+                                  </span>
+
+                              </ng-template>
+                          </p-cellEditor>
+                        </td>
+
+                      <td pEditableColumn [style.width]="'200px'">
+                          <p-cellEditor>
+                              <ng-template pTemplate="input">
+                                 <!-- <select class="form-control" id="unitMeasure-{{i + 1}}" style="min-width: 12rem" [(ngModel)]="record.unitMeasure" name="unitMeasure-{{i + 1}}" aria-label="Unit Measure">
+                                      <option value="">Choose Unit Measure</option>
+                                      <option *ngFor="let entity of units" [value]="entity.unit_abbreviation">{{entity.unit_abbreviation}} - {{entity.unit_description}}</option>
+                                  </select>-->
+                                 <p-dropdown 
+                                    id="unitMeasure-{{i + 1}}"
+                                    name="unitMeasure-{{i + 1}}"
+                                    placeholder="Choose Unit Measure"
+                                    filter="true"
+                                    [(ngModel)]="record.unitMeasure"
+                                    [options]="unitMeasures" 
+                                    [autoWidth]="false" 
+                                    [style]="{'width':'100%'}"
+                                    filterPlaceholder="Filter by contract no." 
+                                    appendTo="body">
+                                  </p-dropdown>
+
+                              </ng-template>
+
+                              <ng-template pTemplate="output">
+                                  <span class="table__placeholder" [customErrors]="{value: record.unitMeasure, field: 'unitMeasure'}">
+                                      {{record.unitMeasure === '' ? 'Choose Unit Measure' : getUnitMeasure(record.unitMeasure)}}
+                                  </span>
+                                 
+                              </ng-template>
+                          </p-cellEditor>
+                      </td>
+
+                      <td pEditableColumn [style.width]="'150px'">
+                          <p-cellEditor>
+                              <ng-template pTemplate="input">
+                                  <input
+                                    type="text"
+                                    id="quatitySold-{{i + 1}}"
+                                    name="quatitySold-{{i + 1}}"
+                                    [(ngModel)]="record.quatitySold"
+                                    aria-label="Quantity of Items Sold" customErrors>
+                              </ng-template>
+
+                              <ng-template pTemplate="output">
+                                  <span class="table__placeholder" [customErrors]="{value: record.quatitySold, field: 'quatitySold'}">
+                                      {{record.quatitySold}}
+                                  </span>
+                                  
+                              </ng-template>
+                          </p-cellEditor>
+
+                        </td>
+
+                        <td pEditableColumn [style.width]="'150px'">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input
+                                      id="pricePerUnit-{{i + 1}}"
+                                      type="text"
+                                      name="pricePerUnit-{{i + 1}}"
+                                      [(ngModel)]="record.pricePerUnit"
+                                      aria-label="Unit Price" customErrors>
+                                </ng-template>
+
+                                <ng-template pTemplate="output">
+                                    <span class="table__placeholder" [customErrors]="{value: record.pricePerUnit, field: 'pricePerUnit'}">
+                                        <!--{{record.pricePerUnit | currency: 'USD':true}}-->
+                                        {{transformCurrency(record.pricePerUnit) ? (record.pricePerUnit | currency: 'USD':true) : record.pricePerUnit}}
+                                    </span>
+                                   
+                                </ng-template>
+                            </p-cellEditor>
+                          </td>
+
+                          <td pEditableColumn [style.width]="'150px'">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                  <input
+                                    id="totalPrice-{{i + 1}}"
+                                    type="text"
+                                    name="totalPrice-{{i + 1}}"
+                                    disabled="true"
+                                    [(ngModel)]="record.totalPrice"
+                                    aria-label="Unit Price">
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <span class="table__placeholder">
+                                        {{calculatePrice(record) | currency: 'USD':true}}
+                                    </span>
+                                 
+                                    <!-- {{record.totalPrice}} -->
+                                </ng-template>
+                            </p-cellEditor>
+
+                            <!-- <span id="totalPrice-{{i + 1}}" class="text-right" style="min-width: 8rem;" aria-label="Total Price">{{record.totalPrice | currency: 'USD':true}}</span>
+                            <span [hidden]="true">{{calculatePrice(record)}}</span> -->
+                          </td>
+
+                         <td pEditableColumn [style.width]="'200px'">
+                            <p-cellEditor>
+                              <ng-template pTemplate="input">
+                               <!-- <select class="form-control" id="nonFederalEntity-{{i + 1}}" style="min-width: 12rem" [(ngModel)]="record.nonGovEntity" name="nonFederalEntity-{{i + 1}}" aria-label="Non Federal Entity">
+                                    <option *ngFor="let entity of nonFederalEntities" [value]="entity.code">{{entity.code}} - {{entity.description}}</option>
+                                </select>-->
+
+                                <p-dropdown 
+                                  id="nonFederalEntity-{{i + 1}}"
+                                  name="nonFederalEntity-{{i + 1}}"
+                                  placeholder="Choose Entity"
+                                  filter="true"
+                                  [(ngModel)]="record.nonGovEntity"
+                                  [options]="nonFederalEntities" 
+                                  [autoWidth]="false" 
+                                  [style]="{'width':'100%'}"
+                                  filterPlaceholder="Filter by code" 
+                                  appendTo="body">
+                                </p-dropdown>
+                              </ng-template>
+
+                              <ng-template pTemplate="output">
+                                  <span class="table__placeholder">    
+                                    {{getEntityDescription(record.nonGovEntity)}}
+                                  </span>
+                                
+                              </ng-template>
+                          </p-cellEditor>
+                        </td>
+
+                        <td [style.width]="'100px'">
+                            <button
+                            class="btn btn-sm btn-danger"
+                            (click)="deleteLineDialog(order, i, deleteRowModal)"
+                            aria-label="delete record from order"
+                            >
+                            <i class="fa fa-close"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="footer">
+                    <div class="paginator__footer__info">
+                      <span role="alert" aria-live="assertive" class="paginator__footer__table-count">Showing {{dt.first + 1}} to {{((dt.first + dt.rows) < dt.totalRecords ? dt.first + dt.rows : dt.totalRecords )}} out of {{dt.totalRecords}} entries</span>
+                    </div>
+                    <div class="paginator__button__wrapper">
+                      <button
+                        mat-button
+                        color="link"
+                        id="add__new-line"
+                        [disabled]=""
+                        (click)="addNewLine(order, dt)"
+                        aria-label="add record to the order">
+                        <strong style="font-size: 1rem">+ ADD NEW LINE</strong>
+                      </button>
+                    </div>
+                  </ng-template>
+
+                 <!-- <ng-template pTemplate="paginatorleft">
+                    <div class="paginator__footer__info">
+                      <span role="alert" aria-live="assertive" class="paginator__footer__table-count">Showing {{dt.first + 1}} to {{((dt.first + dt.rows) < dt.totalRecords ? dt.first + dt.rows : dt.totalRecords )}} out of {{dt.totalRecords}} entries</span>
+                    </div>
+                  </ng-template>
+
+                  <ng-template pTemplate="paginatorright">
+                    <div class="paginator__button__wrapper">
+                      <button
+                        mat-button
+                        color="link"
+                        id="add__new-line"
+                        [disabled]=""
+                        (click)="addNewLine(order, dt)"
+                        aria-label="add record to the order">
+                        <strong style="font-size: 1rem">+ ADD NEW LINE</strong>
+                      </button>
+                    </div>
+                  </ng-template>-->
+                </p-table>
+
+            </div>
+            <!--<div class="clearfix mt-1" [hidden]="">
+              <div class="pull-right">
+                <button
+                  mat-button
+                  color="link"
+                  id=""
+                  [disabled]=""
+                  (click)="addNewLine(order, i)"
+                    aria-label="add record to the order">
+                  <strong style="font-size: 1rem">+ ADD NEW LINE</strong>
+                </button>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4 page-actions" *ngIf="showSaveControls()">
+        <div class="col-12">
+          <div class="clearfix">
+            <div class="pull-right actions-button">
+              <button
+                class="save-sales-data"
+                mat-raised-button
+                (click)="showSaveModal('save')"
+                color="accent"
+                >Save</button>
+              <button
+                class="submit-sales-data"
+                mat-raised-button
+                (click)="showSaveModal('submit')"
+                color="accent">Submit</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <ng-template #deleteRowModal>
+      <div class="modal-header clearfix">
+        <button type="button" class="close ml-auto" aria-label="Close" (click)="closeDeleteRowModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this line item?
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <div class="pull-right">
+            <button mat-raised-button color="primary" (click)="closeDeleteRowModal(false)">No</button>
+            <button mat-raised-button color="accent" (click)="deleteRowFromOrder(true)">Yes</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template #deleteOrderModal>
+      <div class="modal-header clearfix">
+        <button type="button" class="close ml-auto" aria-label="Close" (click)="closeDeleteOrderModal(false)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this order?
+      </div>
+      <div class="modal-footer">
+        <div class="clearfix">
+          <div class="pull-right">
+            <button mat-raised-button color="primary" (click)="closeDeleteOrderModal(false)">No</button>
+            <button mat-raised-button color="accent" (click)="deleteOrderTable(true)">Yes</button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+</mat-card>
+
+
+
+
+<ng-template #deleteRowModal>
+  <div class="modal-header clearfix">
+    <button type="button" class="close ml-auto" aria-label="Close" (click)="closeDeleteRowModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete this line item?
+  </div>
+  <div class="modal-footer">
+    <div class="clearfix">
+      <div class="pull-right">
+        <button mat-raised-button color="primary" (click)="closeDeleteRowModal(false)">No</button>
+        <button mat-raised-button color="accent" (click)="deleteRowFromOrder(true)">Yes</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteOrderModal>
+  <div class="modal-header clearfix">
+    <button type="button" class="close ml-auto" aria-label="Close" (click)="closeDeleteOrderModal(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to delete this order?
+  </div>
+  <div class="modal-footer">
+    <div class="clearfix">
+      <div class="pull-right">
+        <button mat-raised-button color="primary" (click)="closeDeleteOrderModal(false)">No</button>
+        <button mat-raised-button color="accent" (click)="deleteOrderTable(true)">Yes</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!--<ng-template #saveFormEntryModal>
+  <div class="modal-header clearfix">
+    <button type="button" class="close ml-auto" aria-label="Close" (click)="closeSaveFormEntryModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Save data entry?
+  </div>
+  <div class="modal-footer justify-content-between">
+    <div *ngIf="savingLoader"><i class="fa fa-spinner fa-spin" style="font-size:24px" aria-hidden="true"></i> Saving Data..</div>
+    <div class="ml-auto">
+      <button mat-raised-button color="primary" (click)="closeSaveFormEntryModal()">No</button>
+      <button mat-raised-button color="accent" [disabled]="savingLoader" (click)="confirmSaveFormEntryModal()">Yes</button>
+    </div>
+  </div>
+</ng-template>-->

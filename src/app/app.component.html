@@ -1,0 +1,32 @@
+<div role="banner">
+    <a (click)="scrollTo('main-content')" class="sr-only">Skip to content</a>
+    <app-header
+        (sidenavToggle)="sidenav.toggle()"
+        [servertime]="servertime"
+        [displayName]="userName">
+    </app-header>
+</div>
+<mat-sidenav-container>
+    <mat-sidenav #sidenav opened="true" mode="side" role="navigation" class="app-sidenav">
+            <div class="tdr-side-nav">
+                <app-side-nav></app-side-nav>
+            </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+       <!-- <app-breadcrumb></app-breadcrumb>-->
+       <main role="main">
+            <router-outlet (deactivate)="onDeactivate()" id="main-content"></router-outlet>
+       </main>
+        <app-footer [versionNo]="versionNo"></app-footer>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #sessionModal>
+    <div class="modal-header clearfix">
+        <h4 class="modal-title">Your Session is About to Expire!</h4>
+    </div>
+    <div class="modal-body">
+       {{idleState}}
+    </div>
+</ng-template>
+<app-loading-bar></app-loading-bar>

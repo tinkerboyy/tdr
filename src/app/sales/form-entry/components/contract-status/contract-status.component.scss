@@ -1,0 +1,28 @@
+.errmsg {
+  border: 1px solid red;
+}
+
+:host {
+  .ui-dropdown {
+    .ui-dropdown-clear-icon {
+      display: none;
+    }
+  }
+  
+
+  label {
+    padding-top: 0.5rem;
+  }
+  p {
+      margin-bottom: 1rem;
+  }
+  .my-auto{
+      padding: 5px;
+  }
+
+  .reporting-zero-sales{
+    background-color: #094f8a;
+    color: #fff;
+    text-align: center
+  }
+}

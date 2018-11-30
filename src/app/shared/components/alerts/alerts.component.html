@@ -1,0 +1,4 @@
+<div *ngFor="let alert of alerts" class="{{ cssClass(alert) }} mat-card card-short alert-dismissable" role="alert">
+  <span class="alert-content" [innerHTML]="alert.message"></span>
+  <a class="close" (click)="removeAlert(alert)">&times;</a>
+</div>

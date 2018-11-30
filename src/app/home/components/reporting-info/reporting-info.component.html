@@ -1,0 +1,14 @@
+<div class="row justify-content-between">
+    <div class="col-4 card colorbox grey-box" style="max-width: 31.333333%">
+      <span class="colorbox-name">Current Payment Due Date</span>
+      <span class="colorbox-value">{{reportingData?.iff_paymentDueDate | date:'MM/dd/yyyy'}}</span>
+    </div>
+    <div class="col-4 card colorbox orange-box" style="max-width: 31.333333%">
+      <span class="colorbox-name">Current Due Date for Monthly Reporting</span>
+      <span class="colorbox-value">{{reportingData?.monthlyReportingDueDate | date:'MM/dd/yyyy'}}</span>
+    </div>
+    <div class="col-4 card colorbox blue-box" style="max-width: 31.333333%">
+      <span class="colorbox-name">Current Due Date for Quarterly Reporting</span>
+      <span class="colorbox-value">{{reportingData?.quarterlyReportingDueDate | date:'MM/dd/yyyy'}}</span>
+    </div>
+  </div>

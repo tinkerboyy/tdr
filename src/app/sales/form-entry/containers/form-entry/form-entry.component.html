@@ -1,0 +1,110 @@
+<div class="container-fluid main-container">
+  
+  <div class="breadcrumb-wrapper22">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/v2/home" class="mat-link">Home</a>
+      </li>
+      <li class="breadcrumb-item" tooltip="3 digits, back of your card"
+      #myTooltip="tooltip">{{pageTitle}}</li>
+    </ol>
+  </div>
+
+  <app-alerts></app-alerts>
+
+  <!-- Page info -->
+  <h2 class="page-title mt-3">Report Data via Form Entry</h2>
+  <div class="smaller-text mb-3" role="complementary">
+	You may report new sales data using this online data entry form. Select the Contract Number and enter the data.Select "Save" to save your progress and continue editing later, or select "Submit" to submit your report when it is complete. If you report monthly and have more than 250 line items to report, you cannot use this method. Please use the "Report Data by File Upload" method.
+    <span>* Means Required field</span>
+  </div>
+  <!-- End of page info -->
+
+    <div *ngIf="(isLoading$ | async)" class="d-flex justify-content-center align-items-center">
+      <mat-spinner></mat-spinner>
+    </div>
+
+
+    <app-contract-status
+      *ngIf="!(isLoading$ | async)"
+      [reporting]="reportingData"
+      [contracts]="contracts$ | async"
+      [salesTx]="salesTxData"
+      (reportZerosaleStatus)="onReportZerosaleStatus($event)"
+      (contractChanged)="onContractChanged($event)">
+  </app-contract-status>
+
+  <app-sales-table
+    *ngIf="!(isLoading$ | async)"
+    [contract]="contract"
+    [reporting]="reportingData"
+    [salesTx]="salesTxData"
+    [loading]="loadingTable"
+    (updateRecords)="onUpdatedRecords($event)"
+    (addLineItem)="addNewRow($event)">
+</app-sales-table>
+
+</div>
+
+<!--<mat-card>
+  <app-tabs>
+    <app-tab title="tab1">Tab 1</app-tab>
+    <app-tab title="tab2">Tab 2</app-tab>
+    <app-tab title="tab3">Tab 3</app-tab>
+  </app-tabs>
+</mat-card>-->
+
+<ng-template #saveFormEntryModal>
+  <div class="modal-header clearfix">
+    <button type="button" class="close ml-auto" aria-label="Close" (click)="closeSaveFormEntryModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body d-flex flex-column just-content-center align-items-center pl-5 pr-5">
+    <span *ngIf="!isSubmitted"> Save data entry?</span>
+    <div *ngIf="isSubmitted" >
+      <mat-spinner aria-hidden="true"></mat-spinner>
+    </div>
+  </div>
+  <div class="modal-footer"  *ngIf="!isSubmitted">
+    <div class="ml-auto">
+      <button mat-raised-button color="primary" (click)="closeSaveFormEntryModal()">No</button>
+      <button mat-raised-button color="accent" (click)="confirmSaveFormEntryModal()">Yes</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #submitFormEntryModal>
+  <div class="modal-header clearfix">
+    <button type="button" class="close ml-auto" aria-label="Close" (click)="closeSubmitFormEntryModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div *ngIf="isSubmitted" class="d-flex flex-column just-content-center align-items-center pl-5 pr-5">
+        <mat-spinner aria-hidden="true"></mat-spinner>
+      </div>
+    <div *ngIf="preSubmission" class="row">
+      <div *ngIf="!isSubmitted" class="col-1 pr-0">
+        <input id="confirm-submit" type="checkbox" [(ngModel)]="confirmFormEntrySubmit" name="formEntrySubmitConfirmation">
+      </div>
+      <div *ngIf="!isSubmitted" class="col-11 pl-0">By selecting this checkbox and clicking Submit, my digital certificate will capture my submission. I state that the
+      information that is being submitted is complete and accurate. If any of the information that I have submitted is not
+      or ceases to be complete and accurate, I agree to resubmit the information again.</div>
+    </div>
+    <div *ngIf="!preSubmission">
+      You have successfully submitted your data
+    </div>
+  </div>
+  <div class="modal-footer justify-content-between"  *ngIf="!isSubmitted">
+      <div class="ml-auto">
+        <div *ngIf="preSubmission">
+          <button mat-raised-button color="primary" (click)="closeSubmitFormEntryModal()">No</button>
+          <button mat-raised-button color="accent" [disabled]="!confirmFormEntrySubmit || isSubmitted" (click)="confirmSubmitFormEntryModal()">Yes</button>
+        </div>
+        <div *ngIf="!preSubmission">
+          <button mat-raised-button color="accent" (click)="closeSubmitFormEntryModal(true)">OK</button>
+        </div>
+      </div>
+  </div>
+</ng-template>

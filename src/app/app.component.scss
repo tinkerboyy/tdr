@@ -1,0 +1,38 @@
+.tdr-side-nav{
+    width: 240px;
+    background-color: #fff;
+}
+
+main{
+    margin-top: 56px;
+    min-height: 79.9vh;
+    background-color: #f3f4f6;
+}
+
+.app-sidenav{
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+mat-sidenav{
+    box-shadow: 3px 0 6px rgba(0,0,0,.24);
+    position: fixed;
+    top: 56px;
+}
+
+// Sidenav Scrollbar
+::-webkit-scrollbar { /* width */
+    width: 5px;
+}
+
+::-webkit-scrollbar-track { /* Track */
+    background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb { /* Handle */
+    background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover { /* Handle on hover */
+    background: #555; 
+}
